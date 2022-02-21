@@ -75,8 +75,8 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
 
 # convert .ipynb assignments to trimmed .p
 def __convert(input_file, output_dir, output_name):
-    os.system("jupyter nbconvert --output='%s%s' --to python %s" % (output_dir, output_name, input_file))
-    return
+    command = "jupyter nbconvert --output='%s%s' --to python %s" % (output_dir, output_name, input_file)
+    os.system(command)
 
 
 # submit files to moss

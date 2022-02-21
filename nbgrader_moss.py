@@ -19,8 +19,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         course_dir = os.path.expanduser(course_dir)
         os.chdir(course_dir) # change working directory for os commands
     else:
-        print("Error: Incorrect number of arguments")
-        return
+        sys.exit("Error: Incorrect number of arguments")
 
     # create api config
     config = Config()
@@ -55,8 +54,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
     # create set of students who have submitted assignment_name
     student_set = nb_api.get_submitted_students(assignment_name)
     if len(student_set) <= 0: # terminate if no submissions found
-        print("Error: No submissions found for %s" % assignment_name)
-        return
+        sys.exit("Error: No submissions found for %s" % assignment_name)
 
     # create directory for converted files
     os.makedirs("moss/%s/submissions/" % assignment_name, exist_ok=True)

@@ -33,7 +33,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         print("moss.pl not found.")
         print("Do you have a moss account (Y/n)?")
         moss_in = input()
-        if moss_in.lower() == "n":
+        if moss_in[0].lower() == "n":
             sys.exit("You can find Moss registration instructions here: http://moss.stanford.edu/")
         elif (moss_in[0].lower() == "y" or moss_in == ""):
             user_id = input("Enter Moss UserID: ")

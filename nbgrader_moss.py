@@ -4,7 +4,9 @@ from pathlib import Path
 from nbgrader.apps import NbGraderAPI
 from traitlets.config import Config
 
+
 course_dir = None
+
 
 def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom course dir
     # process args
@@ -13,8 +15,8 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         course_dir = (os.getcwd())
     elif len(arg) == 2:
         assignment_name = arg[0].replace(" ", "_")
-        course_dir = os.path.expanduser(course_dir)
         course_dir = arg[1]
+        course_dir = os.path.expanduser(course_dir)
         os.chdir(course_dir) # change working directory for os commands
     else:
         print("Error: Incorrect number of arguments")
@@ -33,13 +35,11 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         print("Do you have a moss account (Y/n)?")
         moss_in = input()
         if moss_in.lower() == "n":
-            print("You can find Moss registration instructions here: http://moss.stanford.edu/")
-            return
+            sys.exit("You can find Moss registration instructions here: http://moss.stanford.edu/")
         elif (moss_in[0].lower() == "y" or moss_in == ""):
             user_id = input("Enter Moss UserID: ")
             if (len(user_id) != 9 or not user_id.isdecimal()):
-                print("Invalid Moss UserID. Exiting.")
-                return
+                sys.exit("Invalid input. Exiting.")
             else:
                 url = "http://moss.stanford.edu/general/scripts/mossnet"
                 urllib.request.urlretrieve(url, "moss.pl")
@@ -50,8 +50,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
                     f.seek(0)
                     f.write(r)
         else:
-            print("Invalid input. Exiting.")
-            return
+            sys.exit("Invalid input. Exiting.")
 
     # create set of students who have submitted assignment_name
     student_set = nb_api.get_submitted_students(assignment_name)

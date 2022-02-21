@@ -13,6 +13,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         course_dir = (os.getcwd())
     elif len(arg) == 2:
         assignment_name = arg[0].replace(" ", "_")
+        course_dir = os.path.expanduser(course_dir)
         course_dir = arg[1]
         os.chdir(course_dir) # change working directory for os commands
     else:

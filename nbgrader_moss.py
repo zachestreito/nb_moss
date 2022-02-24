@@ -90,7 +90,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         __submit(course_dir, assignment_name, notebook)
 
 
-# convert .ipynb assignments to trimmed .p
+# convert .ipynb assignments to trimmed .py
 def __convert(input_file, output_dir, output_name):
     command = "jupyter nbconvert --output='%s%s' --to python %s" % (output_dir, output_name, input_file)
     os.system(command)

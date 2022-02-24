@@ -52,22 +52,42 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
             sys.exit("Invalid input. Exiting.")
 
     # create set of students who have submitted assignment_name
-    student_set = nb_api.get_submitted_students(assignment_name)
-    if len(student_set) <= 0: # terminate if no submissions found
+    students = nb_api.get_submitted_students(assignment_name)
+    if len(students) <= 0: # terminate if no submissions found
         sys.exit("Error: No submissions found for %s" % assignment_name)
 
-    # create directory for converted files
-    os.makedirs("moss/%s/submissions/" % assignment_name, exist_ok=True)
 
-    # convert base file
-    __convert("%s/release/%s/%s.ipynb" % (course_dir, assignment_name, assignment_name), "%s/moss/%s/" % (course_dir, assignment_name), "base")
+    # retrieve list of all notebooks in assignment
+    notebooks = (os.listdir("%s/release/%s/" % (course_dir, assignment_name)))
+    for i in range(len(notebooks)):
+        if notebooks[i].endswith('.ipynb'):
+            notebooks[i] = notebooks[i][:-6] # remove file extension from string
+        else: # remove item from list if it is not .ipynb 
+            notebooks[i] = None # temporary change to none because we don't want to change array size in the middle of the loop
+    notebooks = list(filter(None, notebooks)) # remove all null elements
+
+
+    # create directories for converted files
+    for notebook in notebooks:
+        os.makedirs("moss/%s/%s/" % (assignment_name, notebook), exist_ok=True)
+
+
+    # convert base files
+    for notebook in notebooks:
+        __convert("%s/release/%s/%s.ipynb" % (course_dir, assignment_name, notebook), "%s/moss/%s/%s/" % (course_dir, assignment_name, notebook), "base")
+
 
     # convert student submissions
-    for student in student_set:
-        __convert("%s/submitted/%s/%s/%s.ipynb" % (course_dir, student, assignment_name, assignment_name), "%s/moss/%s/submissions/" % (course_dir, assignment_name), student)
+    for student in students:
+        for notebook in notebooks:
+            file_path = ("%s/submitted/%s/%s/%s.ipynb" % (course_dir, student, assignment_name, notebook))
+            if exists(file_path):
+                __convert(file_path, "%s/moss/%s/%s/" % (course_dir, assignment_name, notebook), student)
+
 
     # SUBMIT!
-    __submit(course_dir, assignment_name)
+    for notebook in notebooks:
+        __submit(course_dir, assignment_name, notebook)
 
 
 # convert .ipynb assignments to trimmed .p
@@ -77,6 +97,7 @@ def __convert(input_file, output_dir, output_name):
 
 
 # submit files to moss
-def __submit(course_dir, assignment_name):
-    command = ("%s/moss.pl -l python -b %s/moss/%s/base.py -d %s/moss/%s/submissions/*.py" % (course_dir, course_dir, assignment_name, course_dir, assignment_name))
+def __submit(course_dir, assignment_name, notebook):
+    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py -d %s/moss/%s/%s/*.py" % (course_dir, course_dir, assignment_name, notebook, course_dir, assignment_name, notebook))
+    print(command)
     os.system(command)

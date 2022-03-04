@@ -51,11 +51,11 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         else:
             sys.exit("Invalid input. Exiting.")
 
+
     # create set of students who have submitted assignment_name
     students = nb_api.get_submitted_students(assignment_name)
     if len(students) <= 0: # terminate if no submissions found
         sys.exit("Error: No submissions found for %s" % assignment_name)
-
 
     # retrieve list of all notebooks in assignment
     notebooks = (os.listdir("%s/release/%s/" % (course_dir, assignment_name)))
@@ -66,16 +66,13 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
             notebooks[i] = None # temporary change to none because we don't want to change array size in the middle of the loop
     notebooks = list(filter(None, notebooks)) # remove all null elements
 
-
     # create directories for converted files
     for notebook in notebooks:
         os.makedirs("moss/%s/%s/" % (assignment_name, notebook), exist_ok=True)
 
-
     # convert base files
     for notebook in notebooks:
         __convert("%s/release/%s/%s.ipynb" % (course_dir, assignment_name, notebook), "%s/moss/%s/%s/" % (course_dir, assignment_name, notebook), "base")
-
 
     # convert student submissions
     for student in students:
@@ -83,7 +80,6 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
             file_path = ("%s/submitted/%s/%s/%s.ipynb" % (course_dir, student, assignment_name, notebook))
             if exists(file_path):
                 __convert(file_path, "%s/moss/%s/%s/" % (course_dir, assignment_name, notebook), student)
-
 
     # SUBMIT!
     for notebook in notebooks:

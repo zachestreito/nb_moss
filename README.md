@@ -1,4 +1,4 @@
-**nbgrader_moss** is a tool that will check nbgrader student assignment submissions for collusion using Stanford's Moss.
+**nb_moss** is a tool that will check nbgrader student assignment submissions for collusion using Stanford's Moss.
 
 ## Usage
 ```

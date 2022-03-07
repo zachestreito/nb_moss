@@ -10,5 +10,5 @@ check(String assignment_name, String course_directory = None)
 
 ## Example command line usage:
 ```
-python3 -c "import nbgrader_moss; nbgrader_moss.check('assignment1', '~/CS426')"
+python3 -c "import nb_moss; nb_moss.check('assignment1', '~/CS426')"
 ```

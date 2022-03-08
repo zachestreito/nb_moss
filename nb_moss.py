@@ -33,9 +33,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         print("moss.pl not found.")
         print("Do you have a moss account (Y/n)?")
         moss_in = input()
-        if moss_in[0].lower() == "n":
-            sys.exit("You can find Moss registration instructions here: http://moss.stanford.edu/")
-        elif (moss_in[0].lower() == "y" or moss_in == ""):
+        if (moss_in == "" or moss_in[0].lower() == "y"):
             user_id = input("Enter Moss UserID: ")
             if (len(user_id) != 9 or not user_id.isdecimal()):
                 sys.exit("Invalid input. Exiting.")
@@ -48,6 +46,8 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
                     r = f.read().replace('987654321', user_id) # replace user id in moss.pl with input
                     f.seek(0)
                     f.write(r)
+        elif moss_in[0].lower() == "n":
+            sys.exit("You can find Moss registration instructions here: http://moss.stanford.edu/")
         else:
             sys.exit("Invalid input. Exiting.")
 
@@ -83,7 +83,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
 
     # SUBMIT!
     for notebook in notebooks:
-        __submit(course_dir, assignment_name, notebook)
+        __submit(course_dir, assignment_name, notebook, students)
 
 
 # convert .ipynb assignments to trimmed .py
@@ -93,7 +93,10 @@ def __convert(input_file, output_dir, output_name):
 
 
 # submit files to moss
-def __submit(course_dir, assignment_name, notebook):
-    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py -d %s/moss/%s/%s/submissions/*.py" % (course_dir, course_dir, assignment_name, notebook, course_dir, assignment_name, notebook))
+def __submit(course_dir, assignment_name, notebook, students):
+    student_files = ""
+    for student in students:
+        student_files = student_files + (" %s/moss/%s/%s/submissions/%s.py" % (course_dir, assignment_name, notebook, student))
+    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py%s" % (course_dir, course_dir, assignment_name, notebook, student_files))
     print(command)
     os.system(command)

@@ -68,7 +68,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
 
     # create directories for converted files
     for notebook in notebooks:
-        os.makedirs("moss/%s/%s/" % (assignment_name, notebook), exist_ok=True)
+        os.makedirs("moss/%s/%s/submissions/" % (assignment_name, notebook), exist_ok=True)
 
     # convert base files
     for notebook in notebooks:
@@ -79,7 +79,7 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
         for notebook in notebooks:
             file_path = ("%s/submitted/%s/%s/%s.ipynb" % (course_dir, student, assignment_name, notebook))
             if exists(file_path):
-                __convert(file_path, "%s/moss/%s/%s/" % (course_dir, assignment_name, notebook), student)
+                __convert(file_path, "%s/moss/%s/%s/submissions/" % (course_dir, assignment_name, notebook), student)
 
     # SUBMIT!
     for notebook in notebooks:
@@ -94,6 +94,6 @@ def __convert(input_file, output_dir, output_name):
 
 # submit files to moss
 def __submit(course_dir, assignment_name, notebook):
-    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py -d %s/moss/%s/%s/*.py" % (course_dir, course_dir, assignment_name, notebook, course_dir, assignment_name, notebook))
+    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py -d %s/moss/%s/%s/submissions/*.py" % (course_dir, course_dir, assignment_name, notebook, course_dir, assignment_name, notebook))
     print(command)
     os.system(command)

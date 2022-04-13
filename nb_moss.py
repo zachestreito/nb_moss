@@ -1,4 +1,4 @@
-import sys, os, stat, urllib.request, nbconvert
+import sys, os, subprocess, stat, urllib.request, nbconvert
 from os.path import exists
 from pathlib import Path
 from nbgrader.apps import NbGraderAPI
@@ -83,7 +83,13 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
 
     # SUBMIT!
     for notebook in notebooks:
-        __submit(course_dir, assignment_name, notebook, students)
+        result = __submit(course_dir, assignment_name, notebook, students)
+        # GRAPH IT!
+        graph_command = 'mossum -p 70 -t ".*/(.+)" %s' % result
+        cwd = os.getcwd()
+        os.chdir("%s/moss/%s/%s" % (course_dir, assignment_name, notebook))
+        os.system(graph_command)
+        os.chdir(cwd)
 
 
 # convert .ipynb assignments to trimmed .py
@@ -98,5 +104,11 @@ def __submit(course_dir, assignment_name, notebook, students):
     for student in students:
         student_files = student_files + (" %s/moss/%s/%s/submissions/%s.py" % (course_dir, assignment_name, notebook, student))
     command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py%s" % (course_dir, course_dir, assignment_name, notebook, student_files))
-    print(command)
-    os.system(command)
+    #print(command)
+    # Get the results url, decode it, and return it
+    output = subprocess.check_output(command, shell=True)
+    b_url = output.split(b'\n')
+    for line in b_url:
+        print(line.decode())
+    url = b_url[-2].decode()
+    return url

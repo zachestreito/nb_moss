@@ -1,5 +1,10 @@
 **nb_moss** is a tool that will check nbgrader student assignment submissions for collusion using Stanford's Moss.
 
+## Requirements
+```
+pip install mossum graphviz
+```
+
 ## Usage
 ```
 check(String assignment_name, String course_directory = None)

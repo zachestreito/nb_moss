@@ -94,16 +94,28 @@ def check(*arg): # first arg = assignment name, second OPTIONAl arg = custom cou
 
 # convert .ipynb assignments to trimmed .py
 def __convert(input_file, output_dir, output_name):
-    command = "jupyter nbconvert --output='%s%s' --to python %s" % (output_dir, output_name, input_file)
+    command = "jupyter nbconvert --output='%s%s' --to script %s" % (output_dir, output_name, input_file)
     os.system(command)
 
 
 # submit files to moss
 def __submit(course_dir, assignment_name, notebook, students):
-    student_files = ""
+    # Check file format of base file to identify programming language
+    language = ""
+    extension = ""
+    if exists("%s/moss/%s/%s/base.py" % (course_dir, assignment_name, notebook)):
+        language = "python"
+        extension = "py"
+    elif exists("%s/moss/%s/%s/base.cs" % (course_dir, assignment_name, notebook)):
+        language = "csharp"
+        extension = "cs"
+    elif exists("%s/moss/%s/%s/base.cpp" % (course_dir, assignment_name, notebook)):
+        language = "cc" #C++
+        extension = "cpp"
+    student_files = "%s/moss/%s/%s/base.%s" % (course_dir, assignment_name, notebook, extension)
     for student in students:
-        student_files = student_files + (" %s/moss/%s/%s/submissions/%s.py" % (course_dir, assignment_name, notebook, student))
-    command = ("%s/moss.pl -l python -b %s/moss/%s/%s/base.py%s" % (course_dir, course_dir, assignment_name, notebook, student_files))
+        student_files = student_files + (" %s/moss/%s/%s/submissions/%s.%s" % (course_dir, assignment_name, notebook, student, extension))
+    command = ("%s/moss.pl -l %s -b %s" % (course_dir, language, student_files))
     #print(command)
     # Get the results url, decode it, and return it
     output = subprocess.check_output(command, shell=True)

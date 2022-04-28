@@ -2,7 +2,7 @@
 
 ## Requirements
 ```
-pip install mossum graphviz
+pip install graphviz git+https://github.com/hjalti/mossum@master
 ```
 
 ## Usage
